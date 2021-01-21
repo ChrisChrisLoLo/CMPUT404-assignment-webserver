@@ -55,6 +55,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
 
         if not is_safe_URI_split(URI_split):
             self.request.sendall(bytearray(f"HTTP/1.1 404 Not Found\r\n\r\n404 Not Found",'utf-8'))
+            return
 
         file_path = '/'.join(['.','www']+URI_split)
         if os.path.exists(file_path):
@@ -67,8 +68,11 @@ class MyWebServer(socketserver.BaseRequestHandler):
             with open(file_path,'r') as file:
                 data = '\r\n\r\n'+file.read()
             self.request.sendall(bytearray(res+content_type_header+data,'utf-8'))
+            return
         else:
+            # print(f'failed:{file_path}')
             self.request.sendall(bytearray(f"HTTP/1.1 404 Not Found\r\n\r\n404 Not Found",'utf-8'))
+            return
 
         # print(URI_split)
 
